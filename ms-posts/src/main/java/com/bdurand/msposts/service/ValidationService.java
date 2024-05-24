@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.*;
 
 import java.io.IOException;
+import java.util.Random;
+import java.util.random.RandomGenerator;
 
 @Slf4j
 @Service
@@ -25,7 +27,7 @@ public class ValidationService {
     @CircuitBreaker(name = "UserExistsValidationService", fallbackMethod = "fallbackUserExists")
     public void userExists(Integer userId) {
 
-        String url = "https://jsonplaceholder.typicode.com/users/" + userId;
+        String url = randomCallToForceCircuitBreaker(userId);
         try {
             String response = restTemplate.getForObject(url, String.class);
             log.info("Response received from client: {}", response);
@@ -37,6 +39,16 @@ public class ValidationService {
             throw new ExternalServiceException("Exception when consuming user-service: " + e.getMessage());
         }
     }
+
+    public String randomCallToForceCircuitBreaker(Integer userId) {
+        String url = "https://jsonplaceholder.typicode.com/users/" + userId;
+        String fakeUrl = "https://httpstat.us/random/401,500-504";
+
+        int randomNumber = RandomGenerator.getDefault().nextInt(10);
+
+        return randomNumber > 4? fakeUrl: url;
+    }
+
     public void fallbackUserExists(ExternalServiceException ex) {
         log.error("Fallback triggered for userExists due to service error: {}", ex.getMessage());
         throw ex;
