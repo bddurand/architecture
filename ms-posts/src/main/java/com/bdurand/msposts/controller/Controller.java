@@ -4,11 +4,16 @@ import com.bdurand.msposts.request.NewPostRequest;
 import com.bdurand.msposts.service.PostService;
 import com.bdurand.msposts.service.ValidationService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 public class Controller {
 
@@ -19,12 +24,10 @@ public class Controller {
     ValidationService validationService;
 
     @PostMapping("/posts")
-    public String createPost(@Valid @RequestBody NewPostRequest request) {
-        //validate if user exists
-        validationService.validateUserExists(request.getUserId());
-        //Save post
+    public ResponseEntity<String> createPost(@Valid @RequestBody NewPostRequest request) {
 
-        //return response
-        return "Post created successfully!";
+        log.info("Received request: {}", request);
+        validationService.userExists(request.getUserId());
+        return ResponseEntity.ok("Post created successfully");
     }
 }
