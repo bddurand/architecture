@@ -1,0 +1,7 @@
+PUT http://localhost:8081//ms-posts/item
+Content-Type: application/json
+
+{}
+
+###
+

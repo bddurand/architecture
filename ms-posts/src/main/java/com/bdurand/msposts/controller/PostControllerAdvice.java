@@ -1,6 +1,7 @@
 package com.bdurand.msposts.controller;
 
 import com.bdurand.msposts.service.exception.ExternalServiceException;
+import com.bdurand.msposts.service.exception.PostNotFoundException;
 import com.bdurand.msposts.service.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,11 @@ public class PostControllerAdvice {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<String> handlePostNotFoundException(PostNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(ExternalServiceException.class)

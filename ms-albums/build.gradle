@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -30,4 +31,14 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+processResources {
+    filesMatching('application.properties' as String) {
+        expand(project: project)
+    }
+    /*
+    filesMatching('application.yml') {
+        expand(project: project)
+    }*/
 }
